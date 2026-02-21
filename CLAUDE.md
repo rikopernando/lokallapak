@@ -7,10 +7,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Package manager: `yarn` only** (no npm — `package-lock.json` was deleted).
 
 ```bash
-yarn dev          # Start dev server (localhost:3000)
-yarn build        # Production build
-yarn lint         # ESLint
-yarn tsc --noEmit # TypeScript type check (no dedicated script — run this directly)
+yarn dev           # Start dev server (localhost:3000)
+yarn build         # Production build
+yarn lint          # ESLint
+yarn format        # Prettier — format all files
+yarn format:check  # Prettier — check without writing
+yarn tsc --noEmit  # TypeScript type check (no dedicated script — run directly)
+```
+
+**Commit message format** (enforced by commitlint + Husky):
+```
+<type>(<scope>): <subject>
+
+Types: feat | fix | docs | style | refactor | perf | test | chore | ci | revert
+Scopes: admin | public | db | auth | api | ui | ad | seller | banner | deps
+Rules: subject lowercase, header ≤ 100 chars
 ```
 
 **Prisma (database):**
@@ -116,11 +127,12 @@ All project documentation lives in `documentations/`:
 | --------------------------- | ---------------------------------------------------------------------------- |
 | `PRD.md`                    | Product requirements, business model, functional spec                        |
 | `ENGINEERING-DESIGN-DOC.md` | Full Prisma schema, API routes, folder structure, data fetching architecture |
+| `CODE-STANDARDS.md`         | ESLint/Prettier config, naming conventions, export rules, commit format      |
 | `PLANNER.md`                | Phase-by-phase build checklist with exact commands                           |
 | `APP-FLOW.md`               | Every user journey, dialog, toast, and redirect                              |
 | `UX.md`                     | UI/UX strategy, component specs, design system, accessibility baseline       |
 
-Read `ENGINEERING-DESIGN-DOC.md` first when working on new features — it contains the canonical folder structure and Prisma schema.
+Read `ENGINEERING-DESIGN-DOC.md` first when working on new features — it contains the canonical folder structure and Prisma schema. Read `CODE-STANDARDS.md` when unsure about naming, exports, or commit format.
 
 ## Claude Code Rules
 
