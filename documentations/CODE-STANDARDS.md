@@ -36,6 +36,7 @@ Configuration file: `.prettierrc`
 ### Pre-commit (`.husky/pre-commit`)
 
 Runs `lint-staged` on staged files:
+
 - Auto-fixes ESLint issues
 - Auto-formats with Prettier
 - Blocks commits with unfixable lint errors
@@ -59,33 +60,33 @@ docs(prd): update roadmap section
 
 ### Allowed Types
 
-| Type | Use for |
-|------|---------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Formatting, no logic change |
+| Type       | Use for                              |
+| ---------- | ------------------------------------ |
+| `feat`     | New feature                          |
+| `fix`      | Bug fix                              |
+| `docs`     | Documentation only                   |
+| `style`    | Formatting, no logic change          |
 | `refactor` | Code restructure, no behavior change |
-| `perf` | Performance improvement |
-| `test` | Test changes |
-| `chore` | Build tooling, dependencies |
-| `ci` | CI configuration |
-| `revert` | Revert a previous commit |
+| `perf`     | Performance improvement              |
+| `test`     | Test changes                         |
+| `chore`    | Build tooling, dependencies          |
+| `ci`       | CI configuration                     |
+| `revert`   | Revert a previous commit             |
 
 ### Valid Scopes for This Project
 
-| Scope | Use for |
-|-------|---------|
-| `admin` | Admin dashboard features |
-| `public` | Public buyer-facing features |
-| `db` | Database schema or migrations |
-| `auth` | Authentication |
-| `api` | API routes |
-| `ui` | Shared UI components |
-| `ad` | Ad-specific logic |
-| `seller` | Seller-related logic |
-| `banner` | Banner management |
-| `deps` | Dependency updates |
+| Scope    | Use for                       |
+| -------- | ----------------------------- |
+| `admin`  | Admin dashboard features      |
+| `public` | Public buyer-facing features  |
+| `db`     | Database schema or migrations |
+| `auth`   | Authentication                |
+| `api`    | API routes                    |
+| `ui`     | Shared UI components          |
+| `ad`     | Ad-specific logic             |
+| `seller` | Seller-related logic          |
+| `banner` | Banner management             |
+| `deps`   | Dependency updates            |
 
 ### Rules
 
@@ -139,27 +140,27 @@ lib/validations/ad.schema.ts
 
 ### In-code Names
 
-| Entity | Convention | Example |
-|--------|-----------|---------|
-| React component name | PascalCase | `AdCard`, `BannerCarousel` |
-| Variables & functions | camelCase | `getAdBySlug`, `formatRupiah` |
-| Server Actions | camelCase verb phrases | `approveAd`, `createSeller` |
-| Hooks | camelCase with `use` prefix | `useAdFilters`, `useGeolocation` |
-| Types & Interfaces | PascalCase | `AdCardProps`, `SellerFormValues` |
-| Constants | UPPER_SNAKE_CASE | `SORT_PRIORITY_MAP`, `WA_MESSAGE_TEMPLATE` |
-| Zod schemas | camelCase with `Schema` suffix | `adSchema`, `sellerSchema` |
-| Enum values | UPPER_SNAKE_CASE | `AdStatus.ACTIVE`, `PackageType.FREE_TRIAL` |
+| Entity                | Convention                     | Example                                     |
+| --------------------- | ------------------------------ | ------------------------------------------- |
+| React component name  | PascalCase                     | `AdCard`, `BannerCarousel`                  |
+| Variables & functions | camelCase                      | `getAdBySlug`, `formatRupiah`               |
+| Server Actions        | camelCase verb phrases         | `approveAd`, `createSeller`                 |
+| Hooks                 | camelCase with `use` prefix    | `useAdFilters`, `useGeolocation`            |
+| Types & Interfaces    | PascalCase                     | `AdCardProps`, `SellerFormValues`           |
+| Constants             | UPPER_SNAKE_CASE               | `SORT_PRIORITY_MAP`, `WA_MESSAGE_TEMPLATE`  |
+| Zod schemas           | camelCase with `Schema` suffix | `adSchema`, `sellerSchema`                  |
+| Enum values           | UPPER_SNAKE_CASE               | `AdStatus.ACTIVE`, `PackageType.FREE_TRIAL` |
 
 ---
 
 ## Export Conventions
 
-| Context | Convention | Reason |
-|---------|-----------|--------|
-| React components | **Default export** | Required for Next.js pages; flexible import names |
-| Utilities, hooks, services, actions | **Named exports** | Tree-shakeable; explicit imports |
-| Types & interfaces | **Named exports** | From `types/index.ts` or co-located |
-| Zod schemas | **Named exports** | Reused across server and client |
+| Context                             | Convention         | Reason                                            |
+| ----------------------------------- | ------------------ | ------------------------------------------------- |
+| React components                    | **Default export** | Required for Next.js pages; flexible import names |
+| Utilities, hooks, services, actions | **Named exports**  | Tree-shakeable; explicit imports                  |
+| Types & interfaces                  | **Named exports**  | From `types/index.ts` or co-located               |
+| Zod schemas                         | **Named exports**  | Reused across server and client                   |
 
 ```typescript
 // ✅ Component — default export

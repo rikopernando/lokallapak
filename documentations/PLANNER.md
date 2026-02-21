@@ -14,6 +14,7 @@ npx husky init
 ```
 
 Create config files:
+
 - `.prettierrc` — semi, singleQuote, printWidth: 100, tabWidth: 2, plugins: prettier-plugin-tailwindcss
 - `commitlint.config.js` — extends @commitlint/config-conventional
 - `.lintstagedrc.js` — ESLint auto-fix on TS/JS, Prettier on all supported types
@@ -21,6 +22,7 @@ Create config files:
 - `.husky/commit-msg` — runs commitlint
 
 Add to `package.json` scripts:
+
 ```json
 "format": "prettier --write .",
 "format:check": "prettier --check ."

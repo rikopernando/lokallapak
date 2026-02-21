@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum AdStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+  EXPIRED
+}
+
+enum PackageType {
+  FREE_TRIAL
+  BASIC
+  PREMIUM
+}
+
+enum BannerStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// ─── Location Hierarchy ───────────────────────────────────────────────────────
+
+model Regency {
+  id           String        @id @default(cuid())
+  name         String
+  subdistricts Subdistrict[]
+  createdAt    DateTime      @default(now())
+
+  @@map("regencies")
+}
+
+model Subdistrict {
+  id        String    @id @default(cuid())
+  name      String
+  lat       Float? // Centroid latitude for geolocation matching
+  lng       Float? // Centroid longitude for geolocation matching
+  regencyId String
+  regency   Regency   @relation(fields: [regencyId], references: [id])
+  villages  Village[]
+  ads       Ad[]
+  createdAt DateTime  @default(now())
+
+  @@map("subdistricts")
+}
+
+model Village {
+  id            String      @id @default(cuid())
+  name          String
+  subdistrictId String
+  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id])
+  ads           Ad[]
+  createdAt     DateTime    @default(now())
+
+  @@map("villages")
+}
+
+// ─── Category ─────────────────────────────────────────────────────────────────
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  iconUrl   String?
+  ads       Ad[]
+  createdAt DateTime @default(now())
+
+  @@map("categories")
+}
+
+// ─── Seller ───────────────────────────────────────────────────────────────────
+
+model Seller {
+  id         String   @id @default(cuid())
+  name       String
+  whatsapp   String // Stored as 628xxxxxxxxxx
+  email      String?
+  isVerified Boolean  @default(false)
+  ads        Ad[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("sellers")
+}
+
+// ─── Ad ───────────────────────────────────────────────────────────────────────
+
+model Ad {
+  id           String      @id @default(cuid())
+  title        String
+  slug         String      @unique // SEO-friendly: {title}-{subdistrict}-{cuid6}
+  description  String      @db.Text
+  price        Int? // IDR; null = "Harga Nego"
+  priceLabel   String? // e.g. "Mulai dari", "Per kg"
+  status       AdStatus    @default(PENDING)
+  packageType  PackageType @default(FREE_TRIAL)
+  sortPriority Int         @default(3) // PREMIUM=1, BASIC=2, FREE_TRIAL=3
+
+  // Relations
+  sellerId      String
+  seller        Seller      @relation(fields: [sellerId], references: [id])
+  categoryId    String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  subdistrictId String
+  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id])
+  villageId     String?
+  village       Village?    @relation(fields: [villageId], references: [id])
+  images        AdImage[]
+
+  // Lifecycle
+  activatedAt  DateTime?
+  expiresAt    DateTime?
+  rejectedAt   DateTime?
+  rejectedNote String?
+
+  // Admin tracking
+  approvedById String?
+  approvedBy   AdminUser? @relation(fields: [approvedById], references: [id])
+
+  // Analytics
+  viewCount    Int @default(0)
+  waClickCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, sortPriority])
+  @@index([subdistrictId, villageId, status])
+  @@index([expiresAt, status])
+  @@index([slug])
+  @@map("ads")
+}
+
+model AdImage {
+  id        String   @id @default(cuid())
+  adId      String
+  ad        Ad       @relation(fields: [adId], references: [id], onDelete: Cascade)
+  url       String // Supabase Storage public URL
+  order     Int      @default(0) // 0 = cover/thumbnail
+  createdAt DateTime @default(now())
+
+  @@map("ad_images")
+}
+
+// ─── Banner ───────────────────────────────────────────────────────────────────
+
+model Banner {
+  id        String       @id @default(cuid())
+  imageUrl  String
+  linkUrl   String?
+  altText   String
+  order     Int          @default(0)
+  status    BannerStatus @default(ACTIVE)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@map("banners")
+}
+
+// ─── Admin ────────────────────────────────────────────────────────────────────
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  approvedAds  Ad[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admin_users")
+}

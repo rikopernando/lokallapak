@@ -57,38 +57,38 @@ enum BannerStatus {
 
 // ─── Location Hierarchy ───────────────────────────────────────────────────────
 
-model Kabupaten {
-  id         String      @id @default(cuid())
-  name       String
-  kecamatans Kecamatan[]
-  createdAt  DateTime    @default(now())
+model Regency {
+  id           String        @id @default(cuid())
+  name         String
+  subdistricts Subdistrict[]
+  createdAt    DateTime      @default(now())
 
-  @@map("kabupatens")
+  @@map("regencies")
 }
 
-model Kecamatan {
-  id          String    @id @default(cuid())
-  name        String
-  lat         Float?                        // Centroid latitude for geolocation matching
-  lng         Float?                        // Centroid longitude for geolocation matching
-  kabupatenId String
-  kabupaten   Kabupaten @relation(fields: [kabupatenId], references: [id])
-  desas       Desa[]
-  ads         Ad[]
-  createdAt   DateTime  @default(now())
+model Subdistrict {
+  id        String    @id @default(cuid())
+  name      String
+  lat       Float?                        // Centroid latitude for geolocation matching
+  lng       Float?                        // Centroid longitude for geolocation matching
+  regencyId String
+  regency   Regency   @relation(fields: [regencyId], references: [id])
+  villages  Village[]
+  ads       Ad[]
+  createdAt DateTime  @default(now())
 
-  @@map("kecamatans")
+  @@map("subdistricts")
 }
 
-model Desa {
-  id          String    @id @default(cuid())
-  name        String
-  kecamatanId String
-  kecamatan   Kecamatan @relation(fields: [kecamatanId], references: [id])
-  ads         Ad[]
-  createdAt   DateTime  @default(now())
+model Village {
+  id            String      @id @default(cuid())
+  name          String
+  subdistrictId String
+  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id])
+  ads           Ad[]
+  createdAt     DateTime    @default(now())
 
-  @@map("desas")
+  @@map("villages")
 }
 
 // ─── Category ─────────────────────────────────────────────────────────────────
@@ -124,7 +124,7 @@ model Seller {
 model Ad {
   id            String      @id @default(cuid())
   title         String
-  slug          String      @unique         // SEO-friendly: {title}-{kecamatan}-{cuid6}
+  slug          String      @unique         // SEO-friendly: {title}-{subdistrict}-{cuid6}
   description   String      @db.Text
   price         Int?                        // IDR; null = "Harga Nego"
   priceLabel    String?                     // e.g. "Mulai dari", "Per kg"
@@ -137,10 +137,10 @@ model Ad {
   seller        Seller      @relation(fields: [sellerId], references: [id])
   categoryId    String
   category      Category    @relation(fields: [categoryId], references: [id])
-  kecamatanId   String
-  kecamatan     Kecamatan   @relation(fields: [kecamatanId], references: [id])
-  desaId        String?
-  desa          Desa?       @relation(fields: [desaId], references: [id])
+  subdistrictId String
+  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id])
+  villageId     String?
+  village       Village?    @relation(fields: [villageId], references: [id])
   images        AdImage[]
 
   // Lifecycle
@@ -161,7 +161,7 @@ model Ad {
   updatedAt     DateTime    @updatedAt
 
   @@index([status, sortPriority])
-  @@index([kecamatanId, desaId, status])
+  @@index([subdistrictId, villageId, status])
   @@index([expiresAt, status])
   @@index([slug])
   @@map("ads")
@@ -213,7 +213,7 @@ model AdminUser {
 **Schema Design Decisions:**
 
 - `Ad.sortPriority` is a pre-computed integer (1/2/3) enabling `ORDER BY sort_priority ASC` without complex CASE expressions.
-- `Kecamatan.lat/lng` stores centroid coordinates for nearest-match geolocation.
+- `Subdistrict.lat/lng` stores centroid coordinates for nearest-match geolocation.
 - `AdImage.order = 0` is the cover image; avoids a separate nullable `coverImageUrl` column.
 - `Ad.price = null` renders as "Harga Nego" in UI.
 - `Banner` has `startsAt`/`endsAt` for scheduled campaigns without requiring admin to be online.
@@ -267,9 +267,9 @@ lokal-lapak/
 │   │   │   ├── route.ts
 │   │   │   └── [id]/route.ts
 │   │   ├── locations/
-│   │   │   ├── kecamatan/route.ts      # GET all kecamatans
-│   │   │   ├── desa/route.ts           # GET ?kecamatanId=
-│   │   │   └── nearest/route.ts        # POST { lat, lng } → nearest kecamatan
+│   │   │   ├── subdistrict/route.ts    # GET all subdistricts
+│   │   │   ├── village/route.ts        # GET ?subdistrictId=
+│   │   │   └── nearest/route.ts        # POST { lat, lng } → nearest subdistrict
 │   │   ├── upload/route.ts             # POST → signed Supabase URL
 │   │   └── cron/
 │   │       └── expire-ads/route.ts     # GET (Vercel Cron, CRON_SECRET protected)
@@ -366,15 +366,15 @@ lokal-lapak/
 
 ### Public (No Auth)
 
-| Method | Path                       | Purpose                                                                                |
-| ------ | -------------------------- | -------------------------------------------------------------------------------------- |
-| GET    | `/api/ads`                 | List ACTIVE ads. Params: `kecamatanId`, `desaId`, `categoryId`, `q`, `cursor`, `limit` |
-| GET    | `/api/ads/[id]`            | Single ad by ID                                                                        |
-| POST   | `/api/ads/[id]/track`      | Increment `waClickCount`. Body: `{ type: "wa_click" }`                                 |
-| GET    | `/api/banners`             | Active banners within date range                                                       |
-| GET    | `/api/locations/kecamatan` | All kecamatans                                                                         |
-| GET    | `/api/locations/desa`      | Desas for `?kecamatanId=`                                                              |
-| POST   | `/api/locations/nearest`   | Body: `{ lat, lng }` → nearest kecamatan                                               |
+| Method | Path                         | Purpose                                                                                     |
+| ------ | ---------------------------- | ------------------------------------------------------------------------------------------- |
+| GET    | `/api/ads`                   | List ACTIVE ads. Params: `subdistrictId`, `villageId`, `categoryId`, `q`, `cursor`, `limit` |
+| GET    | `/api/ads/[id]`              | Single ad by ID                                                                             |
+| POST   | `/api/ads/[id]/track`        | Increment `waClickCount`. Body: `{ type: "wa_click" }`                                      |
+| GET    | `/api/banners`               | Active banners within date range                                                            |
+| GET    | `/api/locations/subdistrict` | All subdistricts                                                                            |
+| GET    | `/api/locations/village`     | Villages for `?subdistrictId=`                                                              |
+| POST   | `/api/locations/nearest`     | Body: `{ lat, lng }` → nearest subdistrict                                                  |
 
 ### Admin (Session Required)
 
@@ -446,14 +446,14 @@ Preferred over API routes for all admin mutations (form submissions). No round-t
 
 ### React Query Usage
 
-| Hook               | Query Key                | Service Function                                  | Used In          |
-| ------------------ | ------------------------ | ------------------------------------------------- | ---------------- |
-| `useInfiniteQuery` | `['ads', filters]`       | `ads.service.getAds(filters)`                     | `AdGrid`         |
-| `useQuery`         | `['kecamatans']`         | `locations.service.getKecamatans()`               | `AdFilters`      |
-| `useQuery`         | `['desas', kecamatanId]` | `locations.service.getDesaByKecamatan(id)`        | `AdFilters`      |
-| `useQuery`         | `['nearest', lat, lng]`  | `locations.service.getNearestKecamatan(lat, lng)` | `useGeolocation` |
-| `useQuery`         | `['banners']`            | `banners.service.getActiveBanners()`              | `BannerCarousel` |
-| `useMutation`      | —                        | `tracking.service.trackWaClick(adId)`             | `WhatsAppButton` |
+| Hook               | Query Key                     | Service Function                                    | Used In          |
+| ------------------ | ----------------------------- | --------------------------------------------------- | ---------------- |
+| `useInfiniteQuery` | `['ads', filters]`            | `ads.service.getAds(filters)`                       | `AdGrid`         |
+| `useQuery`         | `['subdistricts']`            | `locations.service.getSubdistricts()`               | `AdFilters`      |
+| `useQuery`         | `['villages', subdistrictId]` | `locations.service.getVillagesBySubdistrict(id)`    | `AdFilters`      |
+| `useQuery`         | `['nearest', lat, lng]`       | `locations.service.getNearestSubdistrict(lat, lng)` | `useGeolocation` |
+| `useQuery`         | `['banners']`                 | `banners.service.getActiveBanners()`                | `BannerCarousel` |
+| `useMutation`      | —                             | `tracking.service.trackWaClick(adId)`               | `WhatsAppButton` |
 
 ### State Management
 
@@ -476,10 +476,10 @@ Preferred over API routes for all admin mutations (form submissions). No round-t
 2. useGeolocation hook calls navigator.geolocation.getCurrentPosition()
 3a. ON SUCCESS:
     lat/lng → POST /api/locations/nearest { lat, lng }
-    Server: SELECT kecamatan ORDER BY distance(lat, lng, kec.lat, kec.lng) LIMIT 1
-    Returns: { kecamatanId, kecamatanName }
-    → Updates URL: ?kecamatanId={id}
-    → AdFilters pre-selects the kecamatan
+    Server: SELECT subdistrict ORDER BY distance(lat, lng, sub.lat, sub.lng) LIMIT 1
+    Returns: { subdistrictId, subdistrictName }
+    → Updates URL: ?subdistrictId={id}
+    → AdFilters pre-selects the subdistrict
     → AdGrid loads filtered ads
 3b. ON DENY/ERROR:
     → Show empty filter with "Pilih lokasi Anda" placeholder
@@ -489,8 +489,8 @@ Preferred over API routes for all admin mutations (form submissions). No round-t
 **Distance calculation** (Haversine formula on server):
 
 ```typescript
-// Using raw SQL or computed in JS after fetching all kecamatans (small dataset)
-// For MVP: fetch all kecamatans with lat/lng, compute in JS, return nearest
+// Using raw SQL or computed in JS after fetching all subdistricts (small dataset)
+// For MVP: fetch all subdistricts with lat/lng, compute in JS, return nearest
 ```
 
 ---
@@ -515,7 +515,7 @@ const sortPriorityMap = {
 await prisma.ad.update({
   where: { id },
   data: {
-    status: "ACTIVE",
+    status: 'ACTIVE',
     activatedAt: new Date(),
     expiresAt: addDays(new Date(), durationDays[packageType]),
     sortPriority: sortPriorityMap[packageType],
@@ -523,7 +523,7 @@ await prisma.ad.update({
   },
 });
 
-revalidatePath("/");
+revalidatePath('/');
 revalidatePath(`/iklan/${ad.slug}`);
 ```
 
@@ -536,7 +536,7 @@ ORDER BY sort_priority ASC, activated_at DESC
 Prisma:
 
 ```typescript
-orderBy: [{ sortPriority: "asc" }, { activatedAt: "desc" }];
+orderBy: [{ sortPriority: 'asc' }, { activatedAt: 'desc' }];
 ```
 
 ### Cron Expiry (`expire-ads`)
@@ -545,10 +545,10 @@ orderBy: [{ sortPriority: "asc" }, { activatedAt: "desc" }];
 // Runs daily at 00:00 WIB (17:00 UTC)
 await prisma.ad.updateMany({
   where: {
-    status: "ACTIVE",
+    status: 'ACTIVE',
     expiresAt: { lt: new Date() },
   },
-  data: { status: "EXPIRED" },
+  data: { status: 'EXPIRED' },
 });
 ```
 
@@ -600,13 +600,13 @@ await prisma.ad.updateMany({
 **Plus Jakarta Sans** via `next/font/google`:
 
 ```typescript
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from 'next/font/google';
 
 const font = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-sans",
-  display: "swap",
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans',
+  display: 'swap',
 });
 ```
 
@@ -651,8 +651,8 @@ Applied as `className={font.variable}` on `<html>` in root layout.
 Handler verifies:
 
 ```typescript
-const secret = request.headers.get("authorization")?.replace("Bearer ", "");
+const secret = request.headers.get('authorization')?.replace('Bearer ', '');
 if (secret !== process.env.CRON_SECRET) {
-  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 }
 ```

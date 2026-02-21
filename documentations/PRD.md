@@ -20,13 +20,14 @@ LokalLapak adalah platform direktori iklan lokal yang mempertemukan penjual (Sel
 
 ## 2. Model Bisnis
 
-| Nama Paket     | Durasi  | Penempatan           | Harga    | Tujuan                           |
-| -------------- | ------- | -------------------- | -------- | -------------------------------- |
-| **Free Trial** | 7 Hari  | Standar (bawah)      | Rp 0     | Akuisisi seller baru             |
-| **Basic**      | 30 Hari | Standar              | Berbayar | Revenue stream utama             |
-| **Premium**    | 30 Hari | Prioritas (di atas)  | Berbayar | Visibility booster untuk seller  |
+| Nama Paket     | Durasi  | Penempatan          | Harga    | Tujuan                          |
+| -------------- | ------- | ------------------- | -------- | ------------------------------- |
+| **Free Trial** | 7 Hari  | Standar (bawah)     | Rp 0     | Akuisisi seller baru            |
+| **Basic**      | 30 Hari | Standar             | Berbayar | Revenue stream utama            |
+| **Premium**    | 30 Hari | Prioritas (di atas) | Berbayar | Visibility booster untuk seller |
 
 **Catatan:**
+
 - Iklan **Premium** mendapat prioritas urutan di daftar (selalu muncul di atas Basic dan Free Trial).
 - **Banner Carousel** di halaman utama adalah slot iklan terpisah yang dikelola mandiri oleh Admin — bukan bagian dari paket Premium otomatis.
 - Pembayaran paket dilakukan secara offline (konfirmasi manual oleh Admin). Integrasi payment gateway direncanakan di Phase 3.
@@ -45,32 +46,32 @@ LokalLapak adalah platform direktori iklan lokal yang mempertemukan penjual (Sel
 
 ### Buyer
 
-| Saya ingin...                                             | Agar...                                                       |
-| --------------------------------------------------------- | ------------------------------------------------------------- |
-| Platform mendeteksi lokasi saya secara otomatis           | Saya langsung melihat iklan yang dekat tanpa perlu filter manual |
-| Mencari barang berdasarkan lokasi (Kecamatan/Desa)        | Saya menemukan penjual yang bisa COD atau dekat rumah         |
-| Memfilter berdasarkan kategori                            | Saya tidak perlu scroll iklan yang tidak relevan              |
-| Menekan tombol WhatsApp di halaman iklan                  | Saya langsung bernegosiasi tanpa perantara sistem             |
-| Melihat galeri foto produk                                | Saya bisa menilai kondisi barang sebelum menghubungi seller   |
+| Saya ingin...                                      | Agar...                                                          |
+| -------------------------------------------------- | ---------------------------------------------------------------- |
+| Platform mendeteksi lokasi saya secara otomatis    | Saya langsung melihat iklan yang dekat tanpa perlu filter manual |
+| Mencari barang berdasarkan lokasi (Kecamatan/Desa) | Saya menemukan penjual yang bisa COD atau dekat rumah            |
+| Memfilter berdasarkan kategori                     | Saya tidak perlu scroll iklan yang tidak relevan                 |
+| Menekan tombol WhatsApp di halaman iklan           | Saya langsung bernegosiasi tanpa perantara sistem                |
+| Melihat galeri foto produk                         | Saya bisa menilai kondisi barang sebelum menghubungi seller      |
 
 ### Seller
 
-| Saya ingin...                                             | Agar...                                                       |
-| --------------------------------------------------------- | ------------------------------------------------------------- |
-| Mendaftarkan barang/jasa melalui Admin                    | Iklan saya muncul di platform secara resmi dan terpercaya     |
-| Memilih paket durasi (Free Trial / Basic / Premium)       | Saya bisa menyesuaikan budget pemasaran                       |
-| Iklan saya muncul di posisi teratas                       | Produk saya lebih cepat ditemukan pembeli (paket Premium)     |
+| Saya ingin...                                       | Agar...                                                   |
+| --------------------------------------------------- | --------------------------------------------------------- |
+| Mendaftarkan barang/jasa melalui Admin              | Iklan saya muncul di platform secara resmi dan terpercaya |
+| Memilih paket durasi (Free Trial / Basic / Premium) | Saya bisa menyesuaikan budget pemasaran                   |
+| Iklan saya muncul di posisi teratas                 | Produk saya lebih cepat ditemukan pembeli (paket Premium) |
 
 ### Admin
 
-| Saya ingin...                                             | Agar...                                                       |
-| --------------------------------------------------------- | ------------------------------------------------------------- |
-| Login dengan email dan password yang aman                 | Hanya saya yang bisa mengakses dashboard                      |
-| Membuat data seller dan iklan                             | Iklan bisa tayang tanpa seller perlu akses sistem             |
-| Memverifikasi iklan (Approve / Reject)                    | Platform bersih dari penipuan (scam)                          |
-| Menolak iklan dengan catatan alasan                       | Seller tahu kenapa iklannya ditolak                           |
-| Mengelola banner carousel di halaman utama                | Saya bisa mempromosikan konten tertentu secara terpisah       |
-| Melihat statistik ringkas                                 | Saya tahu kondisi platform (pending, aktif, akan kadaluarsa)  |
+| Saya ingin...                              | Agar...                                                      |
+| ------------------------------------------ | ------------------------------------------------------------ |
+| Login dengan email dan password yang aman  | Hanya saya yang bisa mengakses dashboard                     |
+| Membuat data seller dan iklan              | Iklan bisa tayang tanpa seller perlu akses sistem            |
+| Memverifikasi iklan (Approve / Reject)     | Platform bersih dari penipuan (scam)                         |
+| Menolak iklan dengan catatan alasan        | Seller tahu kenapa iklannya ditolak                          |
+| Mengelola banner carousel di halaman utama | Saya bisa mempromosikan konten tertentu secara terpisah      |
+| Melihat statistik ringkas                  | Saya tahu kondisi platform (pending, aktif, akan kadaluarsa) |
 
 ---
 
@@ -93,11 +94,11 @@ PENDING → ACTIVE → EXPIRED
 
 **Kalkulasi `expiresAt`:**
 
-| Paket      | Durasi      |
-| ---------- | ----------- |
-| FREE_TRIAL | +7 hari     |
-| BASIC      | +30 hari    |
-| PREMIUM    | +30 hari    |
+| Paket      | Durasi   |
+| ---------- | -------- |
+| FREE_TRIAL | +7 hari  |
+| BASIC      | +30 hari |
+| PREMIUM    | +30 hari |
 
 ### 5.2 Admin Authentication
 
@@ -119,16 +120,16 @@ PENDING → ACTIVE → EXPIRED
 
 8 kategori pre-seeded:
 
-| Nama Kategori         | Slug                  |
-| --------------------- | --------------------- |
-| Makanan & Minuman     | makanan-minuman       |
-| Fashion & Pakaian     | fashion-pakaian       |
-| Elektronik            | elektronik            |
-| Pertanian & Peternakan| pertanian-peternakan  |
-| Jasa & Layanan        | jasa-layanan          |
-| Kesehatan & Kecantikan| kesehatan-kecantikan  |
-| Pendidikan & Les      | pendidikan-les        |
-| Furnitur & Rumah Tangga| furnitur-rumah-tangga |
+| Nama Kategori           | Slug                  |
+| ----------------------- | --------------------- |
+| Makanan & Minuman       | makanan-minuman       |
+| Fashion & Pakaian       | fashion-pakaian       |
+| Elektronik              | elektronik            |
+| Pertanian & Peternakan  | pertanian-peternakan  |
+| Jasa & Layanan          | jasa-layanan          |
+| Kesehatan & Kecantikan  | kesehatan-kecantikan  |
+| Pendidikan & Les        | pendidikan-les        |
+| Furnitur & Rumah Tangga | furnitur-rumah-tangga |
 
 ### 5.5 Buyer Experience
 
@@ -138,7 +139,7 @@ PENDING → ACTIVE → EXPIRED
 - **Text Search:** Debounced 400ms, mencari pada judul dan deskripsi iklan.
 - **Ad Sorting:** Iklan `PREMIUM` selalu muncul di atas `BASIC`, lalu `FREE_TRIAL`. Dalam paket yang sama, diurutkan berdasarkan `activatedAt` terbaru.
 - **Pagination:** Cursor-based "Muat Lebih Banyak" (bukan numbered pages).
-- **WhatsApp Button:** Tombol hijau di halaman detail iklan. URL: `https://wa.me/{whatsapp}?text={template}`. Template pesan: *"Halo [Nama Seller], saya tertarik dengan [Judul Iklan] di LokalLapak. Apakah masih tersedia dan bisa COD?"*
+- **WhatsApp Button:** Tombol hijau di halaman detail iklan. URL: `https://wa.me/{whatsapp}?text={template}`. Template pesan: _"Halo [Nama Seller], saya tertarik dengan [Judul Iklan] di LokalLapak. Apakah masih tersedia dan bisa COD?"_
 - **Expired Ad:** Iklan kadaluarsa tetap bisa diakses via URL, namun menampilkan banner "Iklan ini sudah tidak aktif" dan tombol WhatsApp disembunyikan.
 
 ### 5.6 WhatsApp Number Format

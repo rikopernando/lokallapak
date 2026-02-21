@@ -16,6 +16,7 @@ yarn tsc --noEmit  # TypeScript type check (no dedicated script — run directly
 ```
 
 **Commit message format** (enforced by commitlint + Husky):
+
 ```
 <type>(<scope>): <subject>
 
@@ -27,12 +28,18 @@ Rules: subject lowercase, header ≤ 100 chars
 **Prisma (database):**
 
 ```bash
-npx prisma migrate dev --name <name>  # Create and apply a migration
-npx prisma migrate deploy             # Apply migrations in production
-npx prisma db seed                    # Seed admin user, locations, categories
-npx prisma studio                     # Open Prisma visual DB browser
-npx prisma generate                   # Regenerate client after schema changes
+yarn prisma migrate dev --name <name>  # Create and apply a migration
+yarn prisma migrate deploy             # Apply migrations in production
+yarn prisma db seed                    # Seed admin user, locations, categories
+yarn prisma studio                     # Open Prisma visual DB browser
+yarn prisma generate                   # Regenerate client after schema changes
 ```
+
+**Prisma v7 specifics (breaking changes from v6):**
+
+- Import path: `@/app/generated/prisma/client` (not `@prisma/client` or `@/app/generated/prisma`)
+- Schema datasource block has no `url` — connection URL is configured in `prisma.config.ts` (CLI) and passed via `@prisma/adapter-pg` at runtime
+- `PrismaClient` always requires `{ adapter }` — see `lib/prisma.ts`
 
 No test framework is configured yet.
 
@@ -54,15 +61,15 @@ This project has two distinct data fetching patterns that must not be mixed:
 
 ```typescript
 // In a Server Component page
-const ads = await prisma.ad.findMany({ where: { status: "ACTIVE" } });
+const ads = await prisma.ad.findMany({ where: { status: 'ACTIVE' } });
 ```
 
 **Client Components (`"use client"`)** — use React Query + Axios service layer.
 
 ```typescript
 // useInfiniteQuery for ad listing, useQuery for locations/banners, useMutation for WA tracking
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { ads } from "@/services/ads.service";
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { ads } from '@/services/ads.service';
 ```
 
 The `services/` directory holds all Axios-based fetcher functions consumed by React Query hooks. The `hooks/` directory holds custom React hooks for browser-side logic (geolocation detection, filter state, image upload orchestration) — not data fetching directly.

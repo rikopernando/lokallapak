@@ -102,6 +102,7 @@ Kotak khusus profil Seller, di bawah judul:
 ### Safety Tips
 
 Teks kecil di bawah tombol WA (atau di dalam sticky bar):
+
 > _"Tips: Selalu lakukan transaksi COD di tempat ramai demi keamanan."_
 
 ### Iklan Tidak Aktif (Expired/Rejected)
@@ -181,12 +182,12 @@ Penting untuk rural users dengan koneksi lambat — blank screen = aplikasi tera
 
 Gunakan **skeleton loader** (gray placeholder blok) — bukan spinner — untuk konten yang sedang dimuat.
 
-| Komponen | Skeleton Design |
-|----------|----------------|
-| AdCard | Kotak abu-abu 1:1 (image placeholder) + 2 garis teks |
-| AdGrid | 6 AdCard skeletons (2 kolom × 3 baris di mobile) |
-| BannerCarousel | Kotak abu-abu full-width, tinggi 200px |
-| Ad Detail Page | Image block besar + 4 garis teks |
+| Komponen       | Skeleton Design                                      |
+| -------------- | ---------------------------------------------------- |
+| AdCard         | Kotak abu-abu 1:1 (image placeholder) + 2 garis teks |
+| AdGrid         | 6 AdCard skeletons (2 kolom × 3 baris di mobile)     |
+| BannerCarousel | Kotak abu-abu full-width, tinggi 200px               |
+| Ad Detail Page | Image block besar + 4 garis teks                     |
 
 - Warna skeleton: `bg-gray-200` dengan animasi `animate-pulse`.
 - Skeleton ditampilkan via **React Suspense** boundaries — tidak perlu loading state manual.
@@ -201,12 +202,12 @@ Saat form sedang disubmit: tombol menampilkan spinner kecil inline + teks beruba
 
 Jangan biarkan user melihat halaman kosong tanpa panduan.
 
-| Kondisi | Pesan | Aksi |
-|---------|-------|------|
-| Tidak ada iklan di lokasi dipilih | "Belum ada iklan di area ini. Coba perluas filter lokasi kamu." | Tombol "Lihat Semua Area" |
-| Pencarian tidak menemukan hasil | "Tidak ada iklan untuk "[kata kunci]"." | Tombol "Hapus Pencarian" |
-| Tidak ada iklan di kategori ini | "Belum ada iklan di kategori ini." | Tombol "Lihat Semua Kategori" |
-| Seller belum punya iklan (admin view) | "Seller ini belum memiliki iklan aktif." | — |
+| Kondisi                               | Pesan                                                           | Aksi                          |
+| ------------------------------------- | --------------------------------------------------------------- | ----------------------------- |
+| Tidak ada iklan di lokasi dipilih     | "Belum ada iklan di area ini. Coba perluas filter lokasi kamu." | Tombol "Lihat Semua Area"     |
+| Pencarian tidak menemukan hasil       | "Tidak ada iklan untuk "[kata kunci]"."                         | Tombol "Hapus Pencarian"      |
+| Tidak ada iklan di kategori ini       | "Belum ada iklan di kategori ini."                              | Tombol "Lihat Semua Kategori" |
+| Seller belum punya iklan (admin view) | "Seller ini belum memiliki iklan aktif."                        | —                             |
 
 **Visual:** Ilustrasi sederhana (SVG inline) + pesan + CTA. Jangan hanya teks kosong.
 
@@ -265,15 +266,15 @@ LokalLapak diklaim sebagai PWA (Progressive Web App). Ini berarti:
 
 Platform ini harus dapat digunakan oleh siapa pun, termasuk di kondisi pencahayaan terang (outdoor, di pasar).
 
-| Standar | Ketentuan |
-|---------|-----------|
-| **Tap target size** | Minimum 44×44px untuk semua tombol dan link interaktif |
-| **Color contrast** | Minimum 4.5:1 untuk teks normal, 3:1 untuk teks besar (WCAG AA) |
-| **Text di atas gambar** | Selalu gunakan overlay gelap semi-transparan di belakang teks di atas foto |
-| **Font size minimum** | 14px untuk teks body; 12px untuk label/meta — tidak lebih kecil |
-| **Alt text** | Semua `next/image` harus memiliki `alt` deskriptif (bukan kosong, kecuali dekoratif) |
-| **Focus visible** | Semua elemen interaktif harus memiliki outline focus yang terlihat (jangan `outline: none`) |
-| **Loading indicators** | Skeleton/spinner harus ada `aria-label="Memuat..."` atau `aria-busy="true"` |
+| Standar                 | Ketentuan                                                                                   |
+| ----------------------- | ------------------------------------------------------------------------------------------- |
+| **Tap target size**     | Minimum 44×44px untuk semua tombol dan link interaktif                                      |
+| **Color contrast**      | Minimum 4.5:1 untuk teks normal, 3:1 untuk teks besar (WCAG AA)                             |
+| **Text di atas gambar** | Selalu gunakan overlay gelap semi-transparan di belakang teks di atas foto                  |
+| **Font size minimum**   | 14px untuk teks body; 12px untuk label/meta — tidak lebih kecil                             |
+| **Alt text**            | Semua `next/image` harus memiliki `alt` deskriptif (bukan kosong, kecuali dekoratif)        |
+| **Focus visible**       | Semua elemen interaktif harus memiliki outline focus yang terlihat (jangan `outline: none`) |
+| **Loading indicators**  | Skeleton/spinner harus ada `aria-label="Memuat..."` atau `aria-busy="true"`                 |
 
 ---
 
